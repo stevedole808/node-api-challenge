@@ -53,20 +53,14 @@ router.post("/", (req, res) => {
 
 router.put("/:id", (req, res) => {
   const id = req.params.id;
-  const body = req.body;
+  const updateProjects = req.body;
 
-  Projects.update(id, body)
+  Projects.update(id, updateProjects)
     .then(updated => {
-      if (!id) {
-        res.status(404).json({
-          message: "The project with the specific ID does not exist"
-        });
-      } else if (!req.body.title || !req.body.description) {
-        res.status(400).json({
-          message: "Please provide name and description for updated project"
-        });
+      if (updateProjects.name && updateProjects.description && updateProjects.completed) {
+        res.status(200).json({ updated });
       } else {
-        res.status(200).json(updated);
+        res.status(400).json({ errorMessage: "Projects could not be edited" });
       }
     })
     .catch(err => {
